@@ -40,6 +40,12 @@ class AppImageArchitecture:
     X86_64 = 'x86_64'
     ARM_64 = 'aarch64'
 
+ICON_EXT = {
+    'image/png': '.png',
+    'image/svg+xml': '.svg',
+    'image/svg': '.svg',
+}
+
 @dataclasses.dataclass
 class AppImageListElement():
     name: str
@@ -869,6 +875,10 @@ class AppImageProvider():
 
                     if tmp_icon_file:
                         i, tmp_icon_ext = os.path.splitext(tmp_icon_file.get_path())
+                        if not tmp_icon_ext:
+                            possible_ext = ICON_EXT.get(get_giofile_content_type(tmp_icon_file))
+                            if possible_ext:
+                                tmp_icon_ext = possible_ext
                         icon_file = Gio.File.new_for_path(f'{tmp_folder.get_path()}/icon{tmp_icon_ext}')
                         gio_copy(file=tmp_icon_file, destination=icon_file)
 
